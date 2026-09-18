@@ -1,0 +1,44 @@
+name: Deploy Flutter Web App to EC2
+
+on:
+  push:
+    branches:
+      - master
+
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.3'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Flutter web app
+        run: flutter build web
+
+      - name: Deploy to EC2
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > key.pem
+          chmod 600 key.pem
+          
+          # Create target directory with correct permissions
+          ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USER@$EC2_HOST "sudo mkdir -p /home/ubuntu/html && sudo chown -R \$USER:\$USER /home/ubuntu/html"
+          
+          # Upload built files to EC2
+          scp -o StrictHostKeyChecking=no -i key.pem -r build/web/* $EC2_USER@$EC2_HOST:/home/ubuntu/html
+          
+          # Restart nginx
+          ssh -o StrictHostKeyChecking=no -i key.pem $EC2_USER@$EC2_HOST "sudo systemctl restart nginx"
+

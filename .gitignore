@@ -1,0 +1,50 @@
+# ================================
+# Flutter / Build
+# ================================
+.dart_tool/
+build/
+.pub/
+.pub-cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# ================================
+# Platforms not needed for React conversion
+# ================================
+/android/
+/ios/
+/test/
+
+# ================================
+# IDE
+# ================================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# ================================
+# Logs / Temporary
+# ================================
+*.log
+*.swp
+.DS_Store
+
+# ================================
+# Misc
+# ================================
+*.class
+*.pyc
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# Flutter generated documentation / symbols
+**/doc/api/
+**/ios/Flutter/.last_build_id
+app.*.symbols
+app.*.map.json
